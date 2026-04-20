@@ -4,10 +4,6 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <!-- ============================================================
-       TEMPLATE PARAMETERS — replace every {{PLACEHOLDER}} below
-       before deploying. See README.md for full instructions.
-       ============================================================ -->
   <title>ReportDash — Stop spending your Sunday assembling client reports.</title>
   <meta name="description" content="ReportDash generates clean monthly social media reports for each of your client accounts automatically — no more Sunday spreadsheet assembly." />
   <meta property="og:title" content="ReportDash — Stop spending your Sunday assembling client reports." />
@@ -26,7 +22,6 @@
       gtagLoaded = true;
       window.dataLayer = window.dataLayer || [];
       window.gtag = function(){dataLayer.push(arguments);};
-      // Google Consent Mode v2: default to denied (GDPR-safe)
       gtag('consent', 'default', {
         ad_storage: 'denied',
         analytics_storage: 'denied',
@@ -34,7 +29,6 @@
         ad_personalization: 'denied',
         wait_for_update: 500
       });
-      // If consent already granted, update immediately
       if (localStorage.getItem('cookie_consent') === 'accepted') {
         gtag('consent', 'update', {
           ad_storage: 'granted',
@@ -62,9 +56,7 @@
         });
       }
     }
-    // Load gtag on page load (in denied mode — GDPR safe, cookieless pings only)
     loadGtag();
-    // Restore consent state + show/hide consent bar
     document.addEventListener('DOMContentLoaded', function() {
       var consent = localStorage.getItem('cookie_consent');
       if (consent === 'accepted') {
@@ -73,525 +65,463 @@
     });
   </script>
 
-  <!-- Fonts — Space Grotesk (headlines) + DM Sans (body) + JetBrains Mono (accents) -->
+  <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;1,9..40,400&display=swap" rel="stylesheet" />
-
-  <!-- Tailwind CDN -->
-  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
 
   <style>
-    /* ---- Base ---- */
-    body { font-family: 'DM Sans', system-ui, sans-serif; background: #070d14; color: #e8f0f8; margin: 0; }
-    h1,h2,h3,h4,h5,h6 { font-family: 'Space Grotesk', system-ui, sans-serif; }
+    /* ── CSS Variables ── */
+    :root {
+      --text-primary: #f1f5f9;
+      --text-secondary: #cbd5e1;
+      --text-muted: #94a3b8;
+      --surface: rgba(30,41,59,0.6);
+      --border: rgba(148,163,184,0.12);
+      --border-hover: rgba(148,163,184,0.3);
+      --accent: #8b5cf6;
+      --accent-dark: #7c3aed;
+      --accent-light: #a78bfa;
+      --accent-glow: rgba(139,92,246,0.15);
+      --amber: #f59e0b;
+      --amber-glow: rgba(245,158,11,0.15);
+      --base: #08080a;
+    }
+
+    /* ── Base ── */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
     html { scroll-behavior: smooth; }
+    body { font-family: 'Inter', system-ui, sans-serif; background: var(--base); color: var(--text-primary); line-height: 1.6; }
+    h1, h2, h3, h4, h5, h6 { font-family: 'Inter', sans-serif; font-weight: 800; letter-spacing: -0.03em; }
 
-    /* ---- Color tokens ---- */
-    /* To change the accent colour, replace all occurrences of #38bdf8 and #0ea5e9 */
-    .accent { color: #38bdf8; }
-    .border-line { border-top: 1px solid #0f1f2e; }
+    /* ── Container ── */
+    .container { max-width: 1120px; margin: 0 auto; padding: 0 2rem; }
+    section { padding: 6rem 0; position: relative; }
+    @media (max-width: 768px) { section { padding: 3.5rem 0; } .container { padding: 0 1.25rem; } }
 
-    /* ---- Form inputs ---- */
-    input, select, textarea { background: #0d1a26; border: 1px solid #0f1f2e; color: #e8f0f8; outline: none; border-radius: 0.375rem; }
-    input:focus, select:focus, textarea:focus { border-color: rgba(56,189,248,0.5); box-shadow: 0 0 0 1px rgba(56,189,248,0.25); }
-    ::placeholder { color: #94a8b8; }
+    /* ── Typography ── */
+    .badge { display: inline-flex; align-items: center; gap: 0.5rem; border: 1px solid var(--border); border-radius: 9999px; padding: 0.4rem 0.9rem; color: var(--text-muted); font-size: 0.8rem; font-weight: 500; backdrop-filter: blur(8px); background: var(--surface); }
+    .badge .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); animation: pulse-dot 2s ease-in-out infinite; }
+    @keyframes pulse-dot { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.5; transform: scale(1.5); } }
+    .section-label { font-size: 0.75rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); font-family: 'JetBrains Mono', monospace; margin-bottom: 1rem; }
+    .section-title { font-size: clamp(1.75rem, 4vw, 2.75rem); font-weight: 800; letter-spacing: -0.03em; color: var(--text-primary); max-width: 680px; }
+    .section-subtitle { font-size: 1.05rem; color: var(--text-secondary); max-width: 560px; margin-top: 1rem; }
 
-    /* ---- Cards ---- */
-    .card { background: #0b1723; border: 1px solid #0f1f2e; border-radius: 0.5rem; }
-    .tag { background: transparent; border: 1px solid #0f1f2e; color: #94a8b8; font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; letter-spacing: 0.05em; padding: 0.3rem 0.65rem; border-radius: 0.25rem; }
-
-    /* ---- Buttons ---- */
-    .btn-primary { background: #38bdf8; color: #070d14; font-weight: 700; border-radius: 0.375rem; padding: 0 2rem; height: 3rem; display: inline-flex; align-items: center; justify-content: center; font-size: 1rem; text-decoration: none; transition: background 0.15s; font-family: 'Space Grotesk', sans-serif; cursor: pointer; border: none; }
-    .btn-primary:hover { background: #0ea5e9; }
-    .btn-ghost { color: #94a8b8; padding: 0 1rem; height: 3rem; display: inline-flex; align-items: center; font-size: 1rem; text-decoration: none; transition: color 0.15s; }
-    .btn-ghost:hover { color: #e8f0f8; }
-
-    /* ---- Layout helpers ---- */
-    .mono { font-family: 'JetBrains Mono', monospace; }
-    .grid-auto { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
-    .grid-2col { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
-    .step-icon { width: 2.25rem; height: 2.25rem; background: rgba(56,189,248,0.1); border-radius: 0.375rem; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-
-    /* ---- Mobile ---- */
-    @media (max-width: 768px) { .hide-mobile { display: none !important; } }
-
-    /* ---- Cookie banner ---- */
-  
-    .show-mobile-only { display: none !important; }
-    @media (max-width: 768px) {
-      .show-mobile-only { display: block !important; }
-      section [style*="grid-template-columns:repeat(4"] { grid-template-columns: repeat(2, 1fr) !important; }
+    /* ── Gradient hero bg ── */
+    .hero-gradient {
+      position: absolute; top: -200px; left: 50%; transform: translateX(-50%);
+      width: 900px; height: 700px;
+      background: radial-gradient(ellipse at center, rgba(139,92,246,0.08) 0%, rgba(139,92,246,0.02) 40%, transparent 70%);
+      pointer-events: none; z-index: 0;
     }
 
-    /* task-558: Mobile readability overhaul */
+    /* ── Glass card ── */
+    .glass-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 2rem;
+      backdrop-filter: blur(12px);
+      transition: border-color 0.3s, transform 0.3s, box-shadow 0.3s;
+    }
+    .glass-card:hover {
+      border-color: var(--border-hover);
+      transform: translateY(-4px);
+      box-shadow: 0 12px 40px rgba(0,0,0,0.3);
+    }
+
+    /* ── Buttons ── */
+    .btn-primary {
+      display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem;
+      background: var(--accent); color: #08080a; font-weight: 700; font-size: 0.95rem;
+      border: none; border-radius: 12px; padding: 0.85rem 2rem;
+      text-decoration: none; cursor: pointer; font-family: 'Inter', sans-serif;
+      transition: all 0.2s; position: relative; overflow: hidden;
+    }
+    .btn-primary:hover { background: var(--accent-dark); transform: translateY(-1px); box-shadow: 0 8px 24px rgba(139,92,246,0.25); }
+    .btn-ghost {
+      display: inline-flex; align-items: center; gap: 0.5rem;
+      color: var(--text-muted); font-size: 0.95rem; font-weight: 500;
+      text-decoration: none; padding: 0.85rem 1.5rem; border-radius: 12px;
+      border: 1px solid var(--border); transition: all 0.2s;
+    }
+    .btn-ghost:hover { color: var(--text-primary); border-color: var(--border-hover); background: var(--surface); }
+
+    /* ── Sticky header ── */
+    .sticky-header { position: fixed; top: 0; left: 0; right: 0; z-index: 1000; background: rgba(8,8,10,0.8); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border-bottom: 1px solid var(--border); }
+    .sticky-header .inner { max-width: 1120px; margin: 0 auto; padding: 0.75rem 1.5rem; display: flex; align-items: center; justify-content: space-between; }
+    .sticky-header .btn-sm { background: var(--accent); color: #08080a; font-weight: 700; border-radius: 10px; padding: 0.45rem 1.25rem; font-size: 0.85rem; text-decoration: none; font-family: 'Inter', sans-serif; transition: all 0.2s; }
+    .sticky-header .btn-sm:hover { background: var(--accent-dark); }
+
+    /* ── Grid ── */
+    .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; }
+    .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.25rem; }
+    @media (max-width: 768px) { .grid-3, .grid-2 { grid-template-columns: 1fr; } }
+
+    /* ── Stats ── */
+    .stat-number { font-size: 2.5rem; font-weight: 800; letter-spacing: -0.03em; color: var(--text-primary); font-variant-numeric: tabular-nums; }
+    .stat-number .counter { display: inline-block; }
+
+    /* ── Accent section ── */
+    .accent-section {
+      background: linear-gradient(135deg, rgba(139,92,246,0.06) 0%, rgba(139,92,246,0.02) 50%, rgba(8,8,10,1) 100%);
+      border-top: 1px solid rgba(139,92,246,0.1);
+      border-bottom: 1px solid rgba(139,92,246,0.1);
+    }
+
+    /* ── Gradient text ── */
+    .gradient-text {
+      background: linear-gradient(135deg, var(--accent) 0%, var(--accent-light) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    /* ── Integration logos ── */
+    .logo-strip { display: flex; align-items: center; gap: 2.5rem; flex-wrap: wrap; }
+    .logo-strip span { font-family: 'Inter', sans-serif; font-weight: 700; font-size: 1rem; color: rgba(255,255,255,0.2); letter-spacing: -0.01em; transition: color 0.3s; }
+    .logo-strip span:hover { color: rgba(255,255,255,0.4); }
+
+    /* ── Step indicator ── */
+    .step-num { width: 2.5rem; height: 2.5rem; border-radius: 12px; background: var(--accent-glow); display: flex; align-items: center; justify-content: center; font-family: 'JetBrains Mono', monospace; font-size: 0.8rem; font-weight: 700; color: var(--accent); flex-shrink: 0; }
+
+    /* ── Tags ── */
+    .tag { display: inline-block; background: var(--surface); border: 1px solid var(--border); color: var(--text-muted); font-size: 0.8rem; font-weight: 500; padding: 0.4rem 0.9rem; border-radius: 9999px; transition: all 0.2s; }
+    .tag:hover { border-color: var(--border-hover); color: var(--text-secondary); }
+
+    /* ── Separator ── */
+    .sep { width: 100%; height: 1px; background: var(--border); }
+
+    /* ── Scroll reveal ── */
+    .reveal { opacity: 0; transform: translateY(32px); transition: opacity 0.7s cubic-bezier(.16,1,.3,1), transform 0.7s cubic-bezier(.16,1,.3,1); }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+    .reveal-delay-1 { transition-delay: 0.1s; }
+    .reveal-delay-2 { transition-delay: 0.2s; }
+    .reveal-delay-3 { transition-delay: 0.3s; }
+    .reveal-scale { opacity: 0; transform: scale(0.95); transition: opacity 0.7s cubic-bezier(.16,1,.3,1), transform 0.7s cubic-bezier(.16,1,.3,1); }
+    .reveal-scale.visible { opacity: 1; transform: scale(1); }
+
+    /* ── Glow orb ── */
+    .glow-orb {
+      position: absolute;
+      width: 200px;
+      height: 200px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(139,92,246,0.2) 0%, transparent 70%);
+      filter: blur(40px);
+      pointer-events: none;
+    }
+
+    /* ── Mobile helpers ── */
+    .hide-mobile { }
     @media (max-width: 768px) {
-      h1 { font-size: 1.625rem !important; line-height: 1.15 !important; }
-      section { padding-top: 2.5rem !important; padding-bottom: 2.5rem !important; }
-      [style*="font-size:clamp(2.25rem"] { font-size: 1.625rem !important; line-height: 1.15 !important; }
-      [style*="font-size:clamp(1.05rem"] { font-size: 0.95rem !important; }
-      [style*="padding:4rem 2rem"] { padding: 2rem 1.25rem !important; }
-      [style*="padding:5rem 2rem"] { padding: 2.5rem 1.25rem !important; }
-      [style*="padding:6rem 2rem"] { padding: 3rem 1.25rem !important; }
-      .grid-auto { grid-template-columns: 1fr !important; gap: 1rem !important; }
-      .grid-2col { grid-template-columns: 1fr !important; gap: 1rem !important; }
-      .founding-box { padding: 1.5rem !important; }
-      .btn-primary { width: 100%; justify-content: center; font-size: 0.95rem !important; height: 3rem !important; }
+      .hide-mobile { display: none !important; }
+      .btn-primary { width: 100%; justify-content: center; }
       input, select, textarea { width: 100% !important; min-height: 48px !important; font-size: 16px !important; }
-      button[type="submit"], .btn-primary { min-height: 48px !important; }
+      button[type="submit"] { min-height: 48px !important; }
     }
+    .show-mobile-only { display: none !important; }
+    @media (max-width: 768px) { .show-mobile-only { display: block !important; } }
+
+    /* ── Form ── */
+    input, select, textarea { background: rgba(30,41,59,0.8); border: 1px solid var(--border); color: var(--text-primary); outline: none; border-radius: 8px; padding: 0.75rem 1rem; font-family: 'Inter', sans-serif; transition: border-color 0.2s; }
+    input:focus, select:focus, textarea:focus { border-color: var(--border-hover); box-shadow: 0 0 0 3px rgba(139,92,246,0.1); }
+    ::placeholder { color: var(--text-muted); }
+
+    /* ── Consent banner ── */
+    .consent-banner {
+      position: fixed; bottom: 0; left: 0; right: 0; z-index: 999;
+      background: rgba(8,8,10,0.95); backdrop-filter: blur(16px);
+      border-top: 1px solid var(--border);
+      padding: 1.5rem 2rem;
+      font-size: 0.875rem;
+      color: var(--text-secondary);
+    }
+    .consent-banner button { background: var(--accent); color: #08080a; font-weight: 700; border: none; border-radius: 6px; padding: 0.5rem 1.25rem; cursor: pointer; margin-left: 1rem; font-family: 'Inter', sans-serif; transition: all 0.2s; }
+    .consent-banner button:hover { background: var(--accent-dark); }
   </style>
 </head>
 <body>
 
   <!-- ============================================================
-       NAV / LOGO
+       STICKY HEADER
        ============================================================ -->
-  <div style="max-width:1120px;margin:0 auto;padding:1.5rem 2rem 0;">
-    <div style="display:flex;align-items:center;gap:0.5rem;">
-      <!-- Product icon — replace the SVG path below with your product's icon or keep this default -->
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/>
-        <!-- DEFAULT ICON: <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/> <line x1="3" y1="9" x2="21" y2="9"/> <line x1="3" y1="15" x2="21" y2="15"/> <line x1="9" y1="3" x2="9" y2="21"/> <line x1="15" y1="3" x2="15" y2="21"/> -->
-      </svg>
-      <span style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:1rem;color:#e8f0f8;letter-spacing:-0.01em;">ReportDash</span>
+  <div class="sticky-header">
+    <div class="inner">
+      <div style="display: flex; align-items: center; gap: 0.5rem; font-weight: 700; font-size: 1rem;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/>
+        </svg>
+        ReportDash
+      </div>
+      <div style="display: flex; gap: 1rem;">
+        <a href="#waitlist" class="btn-sm">Join Waitlist</a>
+      </div>
     </div>
   </div>
 
   <!-- ============================================================
-       HERO — headline + value prop + CTA
+       HERO SECTION
        ============================================================ -->
-  <section style="max-width:1120px;margin:0 auto;padding:4rem 2rem 4rem;position:relative;">
+  <section style="padding-top: 8rem;">
+    <div class="hero-gradient"></div>
+    <div class="container" style="position: relative; z-index: 1;">
+      <div style="max-width: 780px;">
 
-    <!-- Badge -->
-    <div style="display:inline-flex;align-items:center;gap:0.5rem;border:1px solid #0f1f2e;border-radius:0.25rem;padding:0.3rem 0.75rem;color:#94a8b8;font-size:0.8rem;margin-bottom:2rem;font-family:'JetBrains Mono',monospace;">
-      <span style="color:#38bdf8;">→</span> Early Access Open · Built for solo social media freelancers
-      <!-- PARAM: e.g. "Early Access Open · Free to join" or "Limited founding member spots" -->
-    </div>
+        <!-- Badge -->
+        <div class="badge reveal" style="margin-bottom: 2rem;">
+          <span class="dot"></span>
+          Early Access Open · Built for solo social media freelancers
+        </div>
 
-    <!-- CRO: Unfair Advantage killer line -->
-    <div style="display:inline-flex;align-items:center;gap:0.5rem;border:1px solid rgba(56,189,248,0.2);border-radius:0.25rem;padding:0.3rem 0.75rem;color:#38bdf8;font-size:0.8rem;margin-bottom:1rem;font-family:'JetBrains Mono',monospace;font-weight:600;">
-      Most freelancers send dashboards clients don't read. You'll send reports they understand.
-    </div>
+        <!-- Headline -->
+        <h1 class="reveal reveal-delay-1" style="font-size: clamp(2.25rem, 4.5vw, 3.25rem); line-height: 1.15; margin-bottom: 1.5rem;">
+          Client reports that <span class="gradient-text">answer the question</span> before they have to ask.
+        </h1>
 
-    <div style="max-width:780px;">
-      <!-- HEADLINE: make it specific pain-led or outcome-led. Max 10 words. Bold, large. -->
-      <h1 style="font-size:clamp(2.25rem,5vw,3.75rem);line-height:1.08;font-weight:700;letter-spacing:-0.025em;margin-bottom:1.5rem;color:#e8f0f8;">
-        Client reports that answer the question <span style="color:#38bdf8;">before they have to ask.</span>
-      </h1>
+        <!-- Subheadline bullets -->
+        <div class="reveal reveal-delay-2" style="display: flex; flex-direction: column; gap: 0.65rem; margin-bottom: 2.5rem; max-width: 600px;">
+          <p style="font-size: 1.05rem; color: var(--text-secondary); display: flex; align-items: flex-start; gap: 0.75rem;">
+            <span style="width: 6px; height: 6px; border-radius: 50%; background: var(--accent); margin-top: 0.6rem; flex-shrink: 0;"></span>
+            Pull Instagram, Facebook, LinkedIn, and TikTok data in one place
+          </p>
+          <p style="font-size: 1.05rem; color: var(--text-secondary); display: flex; align-items: flex-start; gap: 0.75rem;">
+            <span style="width: 6px; height: 6px; border-radius: 50%; background: var(--accent); margin-top: 0.6rem; flex-shrink: 0;"></span>
+            Monthly reports generate automatically for each client account
+          </p>
+          <p style="font-size: 1.05rem; color: var(--text-secondary); display: flex; align-items: flex-start; gap: 0.75rem;">
+            <span style="width: 6px; height: 6px; border-radius: 50%; background: var(--accent); margin-top: 0.6rem; flex-shrink: 0;"></span>
+            Send in one click and look like a bigger agency
+          </p>
+        </div>
 
-      <!-- dir-122: Scannable bullets replacing paragraph subheadline -->
-      <ul style="list-style:none;padding:0;margin:0 0 2.5rem;max-width:600px;display:flex;flex-direction:column;gap:0.75rem;">
-        <li style="display:flex;align-items:flex-start;gap:0.75rem;font-size:clamp(1.05rem,2vw,1.2rem);color:#94a8b8;line-height:1.6;">
-          <span style="margin-top:0.6rem;width:6px;height:6px;border-radius:50%;background:#38bdf8;flex-shrink:0;"></span>
-          Pull Instagram, Facebook, LinkedIn, and TikTok data in one place
-        </li>
-        <li style="display:flex;align-items:flex-start;gap:0.75rem;font-size:clamp(1.05rem,2vw,1.2rem);color:#94a8b8;line-height:1.6;">
-          <span style="margin-top:0.6rem;width:6px;height:6px;border-radius:50%;background:#38bdf8;flex-shrink:0;"></span>
-          Monthly reports generate automatically for each client account
-        </li>
-        <li style="display:flex;align-items:flex-start;gap:0.75rem;font-size:clamp(1.05rem,2vw,1.2rem);color:#94a8b8;line-height:1.6;">
-          <span style="margin-top:0.6rem;width:6px;height:6px;border-radius:50%;background:#38bdf8;flex-shrink:0;"></span>
-          Send in one click and look like a bigger agency
-        </li>
-      </ul>
+        <!-- CTA Buttons -->
+        <div class="reveal reveal-delay-3" style="display: flex; flex-wrap: wrap; gap: 1rem; align-items: center;">
+          <a href="#waitlist" class="btn-primary">Send Reports Clients Actually Understand</a>
+          <a href="#how-it-works" class="btn-ghost">See how it works ↓</a>
+        </div>
 
-      <div style="display:flex;flex-wrap:wrap;gap:1rem;align-items:center;">
-        <a href="#waitlist" class="btn-primary">Send Reports Clients Actually Understand</a>
-        <a href="#how-it-works" class="btn-ghost">See example report ↓</a>
+        <!-- Example summary -->
+        <div class="reveal" style="margin-top: 2.5rem; max-width: 560px; padding: 1rem 1.25rem; border: 1px solid rgba(139,92,246,0.12); border-radius: 12px; background: rgba(139,92,246,0.03); backdrop-filter: blur(8px);">
+          <p style="margin: 0 0 0.35rem; font-size: 0.7rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--accent); font-family: 'JetBrains Mono', monospace;">Example ReportDash Summary</p>
+          <p style="margin: 0; font-size: 0.9rem; color: var(--text-secondary); line-height: 1.6;"><span style="color: var(--text-primary); font-weight: 600;">ROAS 3.2x</span> — engagement up 18% — best channel: Instagram — next step: increase budget</p>
+          <p style="margin: 0.5rem 0 0; font-size: 0.7rem; color: rgba(148,163,184,0.5); font-family: 'JetBrains Mono', monospace;">Generated: Today, 9:00 AM · 4 platforms · 6 client accounts</p>
+        </div>
       </div>
 
-      <!-- CRO: Example report preview -->
-      <div style="margin-top:2.5rem;max-width:560px;padding:1rem 1.25rem;border:1px solid rgba(56,189,248,0.15);border-radius:0.5rem;background:rgba(56,189,248,0.04);">
-        <p style="margin:0 0 0.35rem;font-size:0.7rem;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:#38bdf8;font-family:'JetBrains Mono',monospace;">Example ReportDash Summary</p>
-        <p style="margin:0;font-size:0.9rem;color:#94a8b8;line-height:1.6;font-style:italic;">"<span style="color:#e8f0f8;font-weight:600;">ROAS 3.2x</span> — engagement up 18% — best channel: Instagram — next step: increase budget"</p>
-        <p style="margin:0.5rem 0 0;font-size:0.7rem;color:rgba(148,168,184,0.5);font-family:'JetBrains Mono',monospace;">Generated: Today, 9:00 AM · 4 platforms · 6 client accounts</p>
+      <!-- Desktop phone mockup -->
+      <div class="hide-mobile glass-card reveal-scale reveal-delay-2" style="position: absolute; right: 2rem; top: 50%; transform: translateY(-50%); width: 280px; font-family: 'JetBrains Mono', monospace; font-size: 0.72rem; color: var(--text-muted); padding: 1.5rem;">
+        <div style="color: var(--accent); margin-bottom: 0.75rem; font-weight: 600;">// reportdash_reports.json</div>
+        <div><span style="color: var(--accent-light);">accounts_tracked:</span> <span style="color: var(--text-primary);">6 clients</span></div>
+        <div><span style="color: var(--accent-light);">reports_generated:</span> <span style="color: var(--text-primary);">6 / 6 ✓</span></div>
+        <div><span style="color: var(--accent-light);">avg_gen_time:</span> <span style="color: var(--text-primary);">12 seconds</span></div>
+        <div><span style="color: var(--accent-light);">your_sunday:</span> <span style="color: var(--text-primary);">free ✓</span></div>
+        <div style="margin-top: 0.75rem; color: var(--accent);">→ all reports sent</div>
       </div>
     </div>
-
-    <!-- Desktop accent visual — product-specific data/screenshot widget -->
-    <!-- Replace the content inside this div with a product-relevant visual: terminal output, data table, code snippet, etc. -->
-    <div class="hide-mobile card" style="position:absolute;right:2rem;top:50%;transform:translateY(-50%);width:260px;padding:1.25rem;font-family:'JetBrains Mono',monospace;font-size:0.72rem;color:#94a8b8;">
-      <div style="color:#38bdf8;margin-bottom:0.75rem;">// april_reports.json</div>
-      <!-- PARAM april_reports.json: e.g. "client_discovery.json" or "job_cost_codes" -->
-      <!-- Add 4-6 lines of product-relevant data below -->
-      <div><span style="color:#0ea5e9;">accounts_tracked:</span> <span style="color:#e8f0f8;">6 clients</span></div>
-      <div><span style="color:#0ea5e9;">reports_generated:</span> <span style="color:#e8f0f8;">6 / 6 ✓</span></div>
-      <div><span style="color:#0ea5e9;">avg_gen_time:</span> <span style="color:#e8f0f8;">12 seconds</span></div>
-      <div><span style="color:#0ea5e9;">your_sunday:</span> <span style="color:#e8f0f8;">free ✓</span></div>
-      <div style="margin-top:0.75rem;color:#38bdf8;">→ all reports sent</div>
-      <!-- PARAM all reports sent: e.g. "baseline_doc generated" or "entries written to QBO" -->
-    </div>
-  </section>
-
-  
-  <!-- task-558: The Problem section (pain text moved from hero) -->
-  <section id="the-problem" style="max-width:1120px;margin:0 auto;padding:3rem 2rem 0;">
-    <p style="font-size:0.7rem;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:#38bdf8;margin-bottom:1rem;font-family:'JetBrains Mono',monospace;">The Problem</p>
-    <p style="font-size:clamp(1.1rem,2.5vw,1.35rem);line-height:1.65;color:#94a8b8;max-width:680px;">Your client dashboard has 14 charts. They look at one number, call you, and question your work. You spend Sunday assembling spreadsheets nobody reads. ReportDash gives them the one-page answer before they have to ask — so you stop defending your results and start scaling your business.</p>
-  </section>
-
-  <!-- dir-122 improvement #3: Founder Credibility -->
-  <section style="max-width:1120px;margin:0 auto;padding:0 2rem 3rem;">
-    <div style="display:flex;align-items:center;gap:1.25rem;padding:1.25rem 1.5rem;border:1px solid #0f1f2e;border-radius:0.5rem;background:rgba(11,23,35,0.5);max-width:600px;">
-      <img src="https://leanaistudio.com/founder.jpeg" alt="Dario Verghi" style="width:56px;height:56px;border-radius:50%;object-fit:cover;flex-shrink:0;border:2px solid rgba(56,189,248,0.3);" />
-      <div>
-        <p style="margin:0;font-size:1rem;font-weight:700;color:#e8f0f8;font-family:'Space Grotesk',sans-serif;">Built by Dario Verghi</p>
-        <p style="margin:0.2rem 0 0;font-size:0.875rem;color:#38bdf8;font-weight:600;">Former VP who built dashboards that nobody used</p>
-        <p style="margin:0.35rem 0 0;font-size:0.85rem;color:#94a8b8;line-height:1.5;">I spent years building enterprise dashboards with every metric stakeholders asked for. They never logged in. What they wanted was a 60-second read that told them what changed and what to do about it. I built ReportDash to deliver that.</p>
-      </div>
-
-        
-        
-</div>
   </section>
 
   <!-- ============================================================
-       PAIN SECTION — 3 specific pain points the ICP recognises
+       THE PROBLEM SECTION
        ============================================================ -->
-  
-  <!-- DASHBOARD MOCKUP — ReportDash -->
-  <section style="padding:3rem 2rem 4rem;">
-    <div style="max-width:1120px;margin:0 auto;position:relative;">
-      <p style="font-size:0.72rem;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:#38bdf8;font-family:'JetBrains Mono',monospace;margin-bottom:1rem;">Product Preview</p>
-      <h2 style="font-size:clamp(1.25rem,2.5vw,1.75rem);font-weight:700;letter-spacing:-0.015em;margin-bottom:0.5rem;color:#f1f5f9;">Early preview of the ReportDash dashboard</h2>
-      <p style="font-size:0.9rem;color:#64748b;margin-bottom:2rem;">Here's what we're building. Join the waitlist to get early access when we launch.</p>
+  <section class="accent-section">
+    <div class="container">
+      <p class="section-label reveal">The Problem</p>
+      <h2 class="section-title reveal" style="margin-bottom: 3rem;">You built a 14-chart dashboard. Your client never logged in again.</h2>
 
-      <!-- Browser Chrome Frame -->
-      <div style="border-radius:0.5rem;overflow:hidden;border:1px solid #1e1e1e;box-shadow:0 4px 24px rgba(0,0,0,0.18);max-width:100%;">
-        <!-- Chrome Bar -->
-        <div style="background:#1e1e1e;padding:0.5rem 0.75rem;display:flex;align-items:center;gap:0.5rem;">
-          <div style="display:flex;gap:0.35rem;">
-            <div style="width:8px;height:8px;border-radius:50%;background:#ff5f57;"></div>
-            <div style="width:8px;height:8px;border-radius:50%;background:#ffbd2e;"></div>
-            <div style="width:8px;height:8px;border-radius:50%;background:#28c840;"></div>
-          </div>
-          <div style="flex:1;background:#333333;border-radius:0.25rem;padding:0.2rem 0.6rem;font-size:0.5rem;color:#64748b;text-align:center;">app.reportdash.com/dashboard</div>
+      <div class="grid-3" style="gap: 2rem;">
+        <div class="glass-card reveal reveal-delay-1">
+          <span style="display: block; font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-muted); margin-bottom: 1rem;">01 · Manual hours</span>
+          <p style="font-size: 1.05rem; color: var(--text-secondary); line-height: 1.7;">You manage 5 client accounts across Instagram, Facebook, LinkedIn, and TikTok. Every month you spend 3-4 hours per client harvesting screenshots, copying numbers, and building the same report template. That's 15-20 hours a month on admin work you don't bill for.</p>
         </div>
 
-        <!-- Dashboard Body -->
-        <div style="background:#0f172a;display:flex;min-height:280px;font-family:'DM Sans',system-ui,sans-serif;">
-          <!-- Sidebar -->
-          <div style="width:120px;flex-shrink:0;background:#1e293b;border-right:1px solid #334155;padding:0.75rem 0.5rem;display:flex;flex-direction:column;gap:0.15rem;" class="hide-mobile">
-            <div style="font-weight:700;font-size:0.6rem;color:#3b82f6;padding:0.3rem 0.6rem;margin-bottom:0.5rem;">ReportDash</div>
-            
-            <div style="padding:0.3rem 0.6rem;border-radius:0.25rem;font-size:0.5rem;color:#3b82f6;font-weight:600;background:rgba(59,130,246,0.15);cursor:default;">Dashboard</div>
-            <div style="padding:0.3rem 0.6rem;border-radius:0.25rem;font-size:0.5rem;color:#64748b;font-weight:400;cursor:default;">Reports</div>
-            <div style="padding:0.3rem 0.6rem;border-radius:0.25rem;font-size:0.5rem;color:#64748b;font-weight:400;cursor:default;">Data Sources</div>
-            <div style="padding:0.3rem 0.6rem;border-radius:0.25rem;font-size:0.5rem;color:#64748b;font-weight:400;cursor:default;">Schedules</div>
-            <div style="padding:0.3rem 0.6rem;border-radius:0.25rem;font-size:0.5rem;color:#64748b;font-weight:400;cursor:default;">Templates</div>
+        <div class="glass-card reveal reveal-delay-2">
+          <span style="display: block; font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-muted); margin-bottom: 1rem;">02 · No solo-sized tool</span>
+          <p style="font-size: 1.05rem; color: var(--text-secondary); line-height: 1.7;">Tools like Reportei and SproutSocial start at $200-500/mo and assume a 5-person agency. You're solo. You don't need a white-label dashboard or 40 integrations — you need a clean PDF that makes your client feel informed and keeps them renewing at 15% month-over-month.</p>
+        </div>
+
+        <div class="glass-card reveal reveal-delay-3">
+          <span style="display: block; font-family: 'JetBrains Mono', monospace; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-muted); margin-bottom: 1rem;">03 · The format problem</span>
+          <p style="font-size: 1.05rem; color: var(--text-secondary); line-height: 1.7;">Your client judges your value by what they see. If your report looks like you spent 20 minutes on it, that's what they think your work is worth. If it looks like a strategic brief from a professional operation, they renew. The platforms give you the data. You just spend hours formatting it.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       STATS SECTION
+       ============================================================ -->
+  <section>
+    <div class="container">
+      <p class="section-label reveal">Impact</p>
+      <h2 class="section-title reveal" style="margin-bottom: 4rem;">What freelancers reclaim</h2>
+
+      <div class="grid-3">
+        <div class="glass-card reveal reveal-delay-1" style="text-align: center; padding: 2rem 1.5rem;">
+          <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 0.75rem; font-weight: 500;">Per client per month</p>
+          <div class="stat-number" style="margin-bottom: 0.4rem;"><span class="counter" data-target="3" data-suffix="-4 hrs">0</span></div>
+          <p style="font-size: 0.9rem; color: var(--text-secondary);">Hours on manual reporting</p>
+        </div>
+
+        <div class="glass-card reveal reveal-delay-2" style="text-align: center; padding: 2rem 1.5rem;">
+          <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 0.75rem; font-weight: 500;">Time savings with 6 clients</p>
+          <div class="stat-number" style="margin-bottom: 0.4rem;"><span class="counter" data-target="25" data-suffix=" hrs/mo">0</span></div>
+          <p style="font-size: 0.9rem; color: var(--text-secondary);">Equivalent of a full week</p>
+        </div>
+
+        <div class="glass-card reveal reveal-delay-3" style="text-align: center; padding: 2rem 1.5rem;">
+          <p style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 0.75rem; font-weight: 500;">Client retention gain</p>
+          <div class="stat-number" style="margin-bottom: 0.4rem;"><span class="counter" data-target="15" data-suffix="%">0</span></div>
+          <p style="font-size: 0.9rem; color: var(--text-secondary);">More professional positioning</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       HOW IT WORKS
+       ============================================================ -->
+  <section id="how-it-works">
+    <div class="container">
+      <p class="section-label reveal">How it works</p>
+      <h2 class="section-title reveal" style="margin-bottom: 4rem;">Connect once. Send reports your clients read in 60 seconds.</h2>
+
+      <div class="grid-3" style="gap: 2rem;">
+        <div class="glass-card reveal reveal-delay-1">
+          <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1.25rem;">
+            <div class="step-num">1</div>
+            <span style="font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-muted);">Step</span>
+          </div>
+          <h3 style="font-size: 1.1rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.75rem;">Connect your client accounts</h3>
+          <p style="font-size: 0.95rem; color: var(--text-secondary); line-height: 1.65;">Link Instagram, Facebook, LinkedIn, and TikTok accounts once. ReportDash reads native platform APIs — no manual login, no screenshot harvesting, no copy-pasting from Business Manager.</p>
+        </div>
+
+        <div class="glass-card reveal reveal-delay-2">
+          <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1.25rem;">
+            <div class="step-num">2</div>
+            <span style="font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-muted);">Step</span>
+          </div>
+          <h3 style="font-size: 1.1rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.75rem;">Reports generate automatically</h3>
+          <p style="font-size: 0.95rem; color: var(--text-secondary); line-height: 1.65;">Every month on your chosen date, ReportDash builds branded one-page PDFs for each client. Reach, engagement, follower growth, top posts, and a plain-English performance summary. Ready before they ask.</p>
+        </div>
+
+        <div class="glass-card reveal reveal-delay-3">
+          <div style="display: flex; align-items: center; gap: 0.75rem; margin-bottom: 1.25rem;">
+            <div class="step-num">3</div>
+            <span style="font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-muted);">Step</span>
+          </div>
+          <h3 style="font-size: 1.1rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.75rem;">Send and look like an agency</h3>
+          <p style="font-size: 0.95rem; color: var(--text-secondary); line-height: 1.65;">Click send in ReportDash. Your branding, your name, a clean layout. Your client gets a professional deliverable that shows they hired someone who runs their business like a real operation — and you spent zero Sunday hours building it.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       BUILT FOR SECTION
+       ============================================================ -->
+  <section class="accent-section">
+    <div class="container">
+      <p class="section-label reveal">Built for</p>
+      <h2 class="section-title reveal" style="margin-bottom: 2rem;">Solo social media freelancers managing 3-10 client accounts</h2>
+      <p class="section-subtitle reveal">If you're managing multiple client accounts and spending your weekends on reporting, this is for you.</p>
+
+      <div class="grid-2" style="gap: 2rem; margin-top: 3rem;">
+        <div class="glass-card reveal reveal-delay-1">
+          <span style="display: block; font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-muted); margin-bottom: 1rem;">Time problem</span>
+          <h3 style="font-size: 1.15rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.75rem;">Reclaim 3-4 hours per client per month</h3>
+          <p style="font-size: 0.95rem; color: var(--text-secondary); line-height: 1.65;">The average solo freelancer spends 3-4 hours per client monthly on reporting. With 5 clients, that's 15-20 hours unbilled. ReportDash automates it to zero manual work.</p>
+        </div>
+
+        <div class="glass-card reveal reveal-delay-2">
+          <span style="display: block; font-family: 'JetBrains Mono', monospace; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-muted); margin-bottom: 1rem;">Positioning problem</span>
+          <h3 style="font-size: 1.15rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.75rem;">Reports that make you look like an agency</h3>
+          <p style="font-size: 0.95rem; color: var(--text-secondary); line-height: 1.65;">Agency tools cost $200-500/mo and assume a team. You're solo and want client work that looks like it came from a 5-person shop. ReportDash is built for that economics and that positioning.</p>
+        </div>
+      </div>
+
+      <div style="display: flex; flex-wrap: wrap; gap: 0.65rem; margin-top: 2.5rem;">
+        <span class="tag reveal">Solo social media freelancers</span>
+        <span class="tag reveal reveal-delay-1">3-10 client accounts</span>
+        <span class="tag reveal reveal-delay-2">Instagram + LinkedIn managers</span>
+        <span class="tag reveal reveal-delay-3">Meta Business Manager users</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================
+       WAITLIST / CTA
+       ============================================================ -->
+  <section id="waitlist">
+    <div class="container">
+      <div class="grid-2" style="gap: 3rem 5rem; align-items: start;">
+
+        <!-- Left -->
+        <div>
+          <p class="section-label reveal">Early access · Limited founding member spots</p>
+          <h2 class="section-title reveal" style="margin-bottom: 1.25rem;">We're onboarding 50 founding teams. Here's what you get.</h2>
+          <p class="section-subtitle reveal" style="margin-bottom: 2rem;">We're bringing on a small group of solo freelancers and boutique agencies to test ReportDash before full public launch.</p>
+
+          <p style="font-size: 0.875rem; font-weight: 600; color: var(--text-primary); margin-bottom: 0.75rem;">What you'll get:</p>
+          <div style="display: flex; flex-direction: column; gap: 0.75rem; font-size: 0.875rem; margin-bottom: 1.5rem;">
+            <p style="display: flex; align-items: center; gap: 0.625rem; color: var(--text-secondary); margin: 0;"><span style="width: 5px; height: 5px; border-radius: 50%; background: var(--accent); flex-shrink: 0;"></span>One-page executive summaries per client</p>
+            <p style="display: flex; align-items: center; gap: 0.625rem; color: var(--text-secondary); margin: 0;"><span style="width: 5px; height: 5px; border-radius: 50%; background: var(--accent); flex-shrink: 0;"></span>Cross-platform insights in plain English</p>
+            <p style="display: flex; align-items: center; gap: 0.625rem; color: var(--text-secondary); margin: 0;"><span style="width: 5px; height: 5px; border-radius: 50%; background: var(--accent); flex-shrink: 0;"></span>Reports ready in one click</p>
+          </div>
+          <p style="font-size: 0.8rem; color: var(--accent); font-weight: 600;">First 50 teams get lifetime founding access and direct founder onboarding.</p>
+        </div>
+
+        <!-- Right: Form -->
+        <div>
+          <div id="success-message" style="display: none; padding: 2.5rem 0;">
+            <div style="width: 3rem; height: 3rem; background: var(--accent-glow); border-radius: 8px; display: flex; align-items: center; justify-content: center; margin-bottom: 1.5rem;">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            </div>
+            <h2 style="font-size: 1.5rem; font-weight: 800; color: var(--text-primary); margin-bottom: 0.75rem;">You're on the list!</h2>
+            <p style="font-size: 0.95rem; color: var(--text-secondary); line-height: 1.65; margin: 0;">We'll email you when early access opens. Check your inbox.</p>
           </div>
 
-          <!-- Main Content -->
-          <div style="flex:1;padding:0.75rem;overflow:hidden;">
-            <!-- Stat Cards -->
-            <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:0.5rem;margin-bottom:0.75rem;">
-              
-            <div style="padding:0.75rem;background:#1e293b;border:1px solid #334155;border-radius:0.375rem;">
-              <div style="font-size:0.55rem;color:#64748b;margin-bottom:0.25rem;">Reports Generated</div>
-              <div style="font-size:1.1rem;font-weight:700;color:#f1f5f9;line-height:1.2;">156</div>
-              <div style="font-size:0.5rem;color:#3b82f6;margin-top:0.15rem;">This month</div>
-            </div>
-            <div style="padding:0.75rem;background:#1e293b;border:1px solid #334155;border-radius:0.375rem;">
-              <div style="font-size:0.55rem;color:#64748b;margin-bottom:0.25rem;">Active Data Sources</div>
-              <div style="font-size:1.1rem;font-weight:700;color:#f1f5f9;line-height:1.2;">8</div>
-              <div style="font-size:0.5rem;color:#3b82f6;margin-top:0.15rem;">All connected</div>
-            </div>
-            <div style="padding:0.75rem;background:#1e293b;border:1px solid #334155;border-radius:0.375rem;">
-              <div style="font-size:0.55rem;color:#64748b;margin-bottom:0.25rem;">Scheduled Reports</div>
-              <div style="font-size:1.1rem;font-weight:700;color:#f1f5f9;line-height:1.2;">12</div>
-              <div style="font-size:0.5rem;color:#3b82f6;margin-top:0.15rem;">Next: tomorrow 9am</div>
-            </div>
-            <div style="padding:0.75rem;background:#1e293b;border:1px solid #334155;border-radius:0.375rem;">
-              <div style="font-size:0.55rem;color:#64748b;margin-bottom:0.25rem;">Avg. Build Time</div>
-              <div style="font-size:1.1rem;font-weight:700;color:#f1f5f9;line-height:1.2;">14s</div>
-              <div style="font-size:0.5rem;color:#3b82f6;margin-top:0.15rem;">Down from 2.5h manual</div>
-            </div>
+          <form id="signup-form" onsubmit="handleSubmit(event)" style="display: flex; flex-direction: column; gap: 1.25rem;">
+            <div>
+              <label style="display: block; font-size: 0.875rem; font-weight: 500; color: var(--text-primary); margin-bottom: 0.375rem;">Work email <span style="color: var(--accent);">*</span></label>
+              <input id="email" type="email" required placeholder="you@yourfirm.com" style="width: 100%; height: 2.75rem; padding: 0 1rem; font-size: 1rem;" />
             </div>
 
-            <!-- Mini Chart + Table -->
-            <div style="display:grid;grid-template-columns:1fr 1.5fr;gap:0.5rem;" class="hide-mobile">
-              <!-- Mini Bar Chart -->
-              <div style="background:#1e293b;border:1px solid #334155;border-radius:0.375rem;padding:0.6rem;">
-                <div style="font-size:0.5rem;color:#64748b;margin-bottom:0.4rem;">Weekly Activity</div>
-                <div style="display:flex;align-items:flex-end;gap:3%;height:60px;">
-                  <div style="width:8%;height:60%;background:#3b82f6;opacity:0.6;border-radius:1px 1px 0 0;"></div><div style="width:8%;height:45%;background:#3b82f6;opacity:0.6;border-radius:1px 1px 0 0;"></div><div style="width:8%;height:78%;background:#3b82f6;opacity:0.6;border-radius:1px 1px 0 0;"></div><div style="width:8%;height:52%;background:#3b82f6;opacity:0.6;border-radius:1px 1px 0 0;"></div><div style="width:8%;height:90%;background:#3b82f6;opacity:0.6;border-radius:1px 1px 0 0;"></div><div style="width:8%;height:68%;background:#3b82f6;opacity:0.6;border-radius:1px 1px 0 0;"></div><div style="width:8%;height:82%;background:#3b82f6;opacity:0.6;border-radius:1px 1px 0 0;"></div>
-                </div>
-                <div style="display:flex;justify-content:space-between;margin-top:0.2rem;">
-                  <span style="font-size:0.4rem;color:#64748b;">Mon</span>
-                  <span style="font-size:0.4rem;color:#64748b;">Sun</span>
-                </div>
+            <div id="form-step-2" style="display: none; flex-direction: column; gap: 1.25rem;">
+              <div>
+                <label style="display: block; font-size: 0.875rem; font-weight: 500; color: var(--text-primary); margin-bottom: 0.375rem;">First name</label>
+                <input id="first-name" type="text" placeholder="Alex" style="width: 100%; height: 2.75rem; padding: 0 1rem; font-size: 1rem;" />
               </div>
-
-              <!-- Data Table -->
-              <div style="background:#1e293b;border:1px solid #334155;border-radius:0.375rem;padding:0.6rem;overflow:hidden;">
-                <div style="font-size:0.5rem;color:#64748b;margin-bottom:0.4rem;">Recent Reports</div>
-                <table style="width:100%;border-collapse:collapse;">
-                  <thead><tr><th style="padding:0.35rem 0.5rem;font-size:0.5rem;font-weight:600;color:#64748b;text-align:left;border-bottom:1px solid #334155;white-space:nowrap;">Report</th><th style="padding:0.35rem 0.5rem;font-size:0.5rem;font-weight:600;color:#64748b;text-align:left;border-bottom:1px solid #334155;white-space:nowrap;">Type</th><th style="padding:0.35rem 0.5rem;font-size:0.5rem;font-weight:600;color:#64748b;text-align:left;border-bottom:1px solid #334155;white-space:nowrap;">Recipients</th><th style="padding:0.35rem 0.5rem;font-size:0.5rem;font-weight:600;color:#64748b;text-align:left;border-bottom:1px solid #334155;white-space:nowrap;">Status</th><th style="padding:0.35rem 0.5rem;font-size:0.5rem;font-weight:600;color:#64748b;text-align:left;border-bottom:1px solid #334155;white-space:nowrap;">Generated</th></tr></thead>
-                  <tbody><tr><td style="padding:0.35rem 0.5rem;font-size:0.5rem;color:#f1f5f9;border-bottom:1px solid #334155;white-space:nowrap;">Q1 Revenue Summary</td><td style="padding:0.35rem 0.5rem;font-size:0.5rem;color:#64748b;border-bottom:1px solid #334155;white-space:nowrap;">Financial</td><td style="padding:0.35rem 0.5rem;font-size:0.5rem;color:#64748b;border-bottom:1px solid #334155;white-space:nowrap;">Board (6)</td><td style="padding:0.35rem 0.5rem;font-size:0.5rem;color:#64748b;border-bottom:1px solid #334155;white-space:nowrap;">Delivered</td><td style="padding:0.35rem 0.5rem;font-size:0.5rem;color:#64748b;border-bottom:1px solid #334155;white-space:nowrap;">Apr 15</td></tr><tr><td style="padding:0.35rem 0.5rem;font-size:0.5rem;color:#f1f5f9;border-bottom:1px solid #334155;white-space:nowrap;">Weekly KPI Digest</td><td style="padding:0.35rem 0.5rem;font-size:0.5rem;color:#64748b;border-bottom:1px solid #334155;white-space:nowrap;">Operations</td><td style="padding:0.35rem 0.5rem;font-size:0.5rem;color:#64748b;border-bottom:1px solid #334155;white-space:nowrap;">Mgmt (4)</td><td style="padding:0.35rem 0.5rem;font-size:0.5rem;color:#64748b;border-bottom:1px solid #334155;white-space:nowrap;">Delivered</td><td style="padding:0.35rem 0.5rem;font-size:0.5rem;color:#64748b;border-bottom:1px solid #334155;white-space:nowrap;">Apr 14</td></tr><tr><td style="padding:0.35rem 0.5rem;font-size:0.5rem;color:#f1f5f9;border-bottom:1px solid #334155;white-space:nowrap;">Client Health Score</td><td style="padding:0.35rem 0.5rem;font-size:0.5rem;color:#64748b;border-bottom:1px solid #334155;white-space:nowrap;">Customer</td><td style="padding:0.35rem 0.5rem;font-size:0.5rem;color:#64748b;border-bottom:1px solid #334155;white-space:nowrap;">CS Team (8)</td><td style="padding:0.35rem 0.5rem;font-size:0.5rem;color:#64748b;border-bottom:1px solid #334155;white-space:nowrap;">Scheduled</td><td style="padding:0.35rem 0.5rem;font-size:0.5rem;color:#64748b;border-bottom:1px solid #334155;white-space:nowrap;">Apr 17</td></tr><tr><td style="padding:0.35rem 0.5rem;font-size:0.5rem;color:#f1f5f9;border-bottom:1px solid #334155;white-space:nowrap;">Pipeline Forecast</td><td style="padding:0.35rem 0.5rem;font-size:0.5rem;color:#64748b;border-bottom:1px solid #334155;white-space:nowrap;">Sales</td><td style="padding:0.35rem 0.5rem;font-size:0.5rem;color:#64748b;border-bottom:1px solid #334155;white-space:nowrap;">VP Sales</td><td style="padding:0.35rem 0.5rem;font-size:0.5rem;color:#64748b;border-bottom:1px solid #334155;white-space:nowrap;">Draft</td><td style="padding:0.35rem 0.5rem;font-size:0.5rem;color:#64748b;border-bottom:1px solid #334155;white-space:nowrap;">Apr 16</td></tr></tbody>
-                </table>
+              <div>
+                <label style="display: block; font-size: 0.875rem; font-weight: 500; color: var(--text-primary); margin-bottom: 0.375rem;">How many client reports do you generate monthly?</label>
+                <select id="report-volume" style="width: 100%; height: 2.75rem; padding: 0 1rem; font-size: 1rem;">
+                  <option value="" disabled selected>Select a range…</option>
+                  <option value="1-5">1 to 5</option>
+                  <option value="6-15">6 to 15</option>
+                  <option value="16-50">16 to 50</option>
+                  <option value="50+">More than 50</option>
+                </select>
+              </div>
+              <div>
+                <label style="display: block; font-size: 0.875rem; font-weight: 500; color: var(--text-primary); margin-bottom: 0.375rem;">What do you currently use for reporting?</label>
+                <select id="current-tool" style="width: 100%; height: 2.75rem; padding: 0 1rem; font-size: 1rem;">
+                  <option value="" disabled selected>Select one…</option>
+                  <option value="google_sheets">Google Sheets</option>
+                  <option value="excel">Excel</option>
+                  <option value="power_bi">Power BI</option>
+                  <option value="custom">Custom dashboards</option>
+                  <option value="other">Other</option>
+                </select>
               </div>
             </div>
 
-            <!-- Mobile: show table only -->
-            <div style="display:none;" class="show-mobile-only">
-              <div style="background:#1e293b;border:1px solid #334155;border-radius:0.375rem;padding:0.6rem;overflow-x:auto;">
-                <div style="font-size:0.5rem;color:#64748b;margin-bottom:0.4rem;">Recent Reports</div>
-                <table style="width:100%;border-collapse:collapse;">
-                  <thead><tr><th style="padding:0.35rem 0.5rem;font-size:0.5rem;font-weight:600;color:#64748b;text-align:left;border-bottom:1px solid #334155;white-space:nowrap;">Report</th><th style="padding:0.35rem 0.5rem;font-size:0.5rem;font-weight:600;color:#64748b;text-align:left;border-bottom:1px solid #334155;white-space:nowrap;">Type</th><th style="padding:0.35rem 0.5rem;font-size:0.5rem;font-weight:600;color:#64748b;text-align:left;border-bottom:1px solid #334155;white-space:nowrap;">Recipients</th><th style="padding:0.35rem 0.5rem;font-size:0.5rem;font-weight:600;color:#64748b;text-align:left;border-bottom:1px solid #334155;white-space:nowrap;">Status</th><th style="padding:0.35rem 0.5rem;font-size:0.5rem;font-weight:600;color:#64748b;text-align:left;border-bottom:1px solid #334155;white-space:nowrap;">Generated</th></tr></thead>
-                  <tbody><tr><td style="padding:0.35rem 0.5rem;font-size:0.5rem;color:#f1f5f9;border-bottom:1px solid #334155;white-space:nowrap;">Q1 Revenue Summary</td><td style="padding:0.35rem 0.5rem;font-size:0.5rem;color:#64748b;border-bottom:1px solid #334155;white-space:nowrap;">Financial</td><td style="padding:0.35rem 0.5rem;font-size:0.5rem;color:#64748b;border-bottom:1px solid #334155;white-space:nowrap;">Board (6)</td><td style="padding:0.35rem 0.5rem;font-size:0.5rem;color:#64748b;border-bottom:1px solid #334155;white-space:nowrap;">Delivered</td><td style="padding:0.35rem 0.5rem;font-size:0.5rem;color:#64748b;border-bottom:1px solid #334155;white-space:nowrap;">Apr 15</td></tr><tr><td style="padding:0.35rem 0.5rem;font-size:0.5rem;color:#f1f5f9;border-bottom:1px solid #334155;white-space:nowrap;">Weekly KPI Digest</td><td style="padding:0.35rem 0.5rem;font-size:0.5rem;color:#64748b;border-bottom:1px solid #334155;white-space:nowrap;">Operations</td><td style="padding:0.35rem 0.5rem;font-size:0.5rem;color:#64748b;border-bottom:1px solid #334155;white-space:nowrap;">Mgmt (4)</td><td style="padding:0.35rem 0.5rem;font-size:0.5rem;color:#64748b;border-bottom:1px solid #334155;white-space:nowrap;">Delivered</td><td style="padding:0.35rem 0.5rem;font-size:0.5rem;color:#64748b;border-bottom:1px solid #334155;white-space:nowrap;">Apr 14</td></tr><tr><td style="padding:0.35rem 0.5rem;font-size:0.5rem;color:#f1f5f9;border-bottom:1px solid #334155;white-space:nowrap;">Client Health Score</td><td style="padding:0.35rem 0.5rem;font-size:0.5rem;color:#64748b;border-bottom:1px solid #334155;white-space:nowrap;">Customer</td><td style="padding:0.35rem 0.5rem;font-size:0.5rem;color:#64748b;border-bottom:1px solid #334155;white-space:nowrap;">CS Team (8)</td><td style="padding:0.35rem 0.5rem;font-size:0.5rem;color:#64748b;border-bottom:1px solid #334155;white-space:nowrap;">Scheduled</td><td style="padding:0.35rem 0.5rem;font-size:0.5rem;color:#64748b;border-bottom:1px solid #334155;white-space:nowrap;">Apr 17</td></tr><tr><td style="padding:0.35rem 0.5rem;font-size:0.5rem;color:#f1f5f9;border-bottom:1px solid #334155;white-space:nowrap;">Pipeline Forecast</td><td style="padding:0.35rem 0.5rem;font-size:0.5rem;color:#64748b;border-bottom:1px solid #334155;white-space:nowrap;">Sales</td><td style="padding:0.35rem 0.5rem;font-size:0.5rem;color:#64748b;border-bottom:1px solid #334155;white-space:nowrap;">VP Sales</td><td style="padding:0.35rem 0.5rem;font-size:0.5rem;color:#64748b;border-bottom:1px solid #334155;white-space:nowrap;">Draft</td><td style="padding:0.35rem 0.5rem;font-size:0.5rem;color:#64748b;border-bottom:1px solid #334155;white-space:nowrap;">Apr 16</td></tr></tbody>
-                </table>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    
-      <!-- Callout overlays (desktop only, positioned over dashboard) -->
-      <div class="hide-mobile" style="position:absolute;top:160px;right:40px;background:#38bdf8;color:#070d14;font-size:0.65rem;font-weight:700;padding:0.3rem 0.6rem;border-radius:0.25rem;font-family:'Space Grotesk',sans-serif;white-space:nowrap;box-shadow:0 2px 8px rgba(56,189,248,0.3);">Executive summary generated automatically</div>
-      <div class="hide-mobile" style="position:absolute;top:240px;left:220px;background:#38bdf8;color:#070d14;font-size:0.65rem;font-weight:700;padding:0.3rem 0.6rem;border-radius:0.25rem;font-family:'Space Grotesk',sans-serif;white-space:nowrap;box-shadow:0 2px 8px rgba(56,189,248,0.3);">All platforms in one view</div>
-      <div class="hide-mobile" style="position:absolute;bottom:80px;right:60px;background:#38bdf8;color:#070d14;font-size:0.65rem;font-weight:700;padding:0.3rem 0.6rem;border-radius:0.25rem;font-family:'Space Grotesk',sans-serif;white-space:nowrap;box-shadow:0 2px 8px rgba(56,189,248,0.3);">Client-ready report in one click</div>
-    </div>
-  </section>
+            <button type="submit" id="submit-btn" class="btn-primary" style="width: 100%; justify-content: center;">Join the waitlist</button>
+            <p style="font-size: 0.8rem; color: var(--accent); font-weight: 600; text-align: center; margin: 0;">Once spots are filled, onboarding closes before launch.</p>
+            <p style="font-size: 0.75rem; color: rgba(180,210,230,0.65); text-align: center; margin: 0;">By signing up you accept our <a href="/privacy.html" style="color: var(--accent); text-decoration: underline;">Privacy Policy</a>. No spam — we only contact about ReportDash.</p>
 
-      
-      
-  <!-- END DASHBOARD MOCKUP -->
-
-<section class="border-line" style="padding:5rem 2rem;">
-    <div style="max-width:1120px;margin:0 auto;">
-      <p style="font-size:0.72rem;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:#38bdf8;font-family:'JetBrains Mono',monospace;margin-bottom:1rem;">The problem</p>
-      <h2 style="font-size:clamp(1.5rem,3vw,2.5rem);font-weight:700;letter-spacing:-0.015em;max-width:660px;margin-bottom:1.25rem;color:#e8f0f8;">
-        You built a 14-chart dashboard. Your client bookmarked the page and never logged in again. And they didn't read anything else.
-        <!-- PARAM: One strong sentence that frames the core problem. E.g. "No tool was built for the consultant who needs their client to fill out a discovery form." -->
-      </h2>
-
-      <!-- dir-122 improvement #5: Aggressive pain subparagraph -->
-      <p style="font-size:1.05rem;color:#94a8b8;line-height:1.7;max-width:620px;margin-bottom:4rem;">
-        Your clients asked for a dashboard. You built one with every metric they requested. They logged in once, got overwhelmed, and went back to asking you for updates on Slack. Now you're spending 2 hours a week writing the same status email you built the dashboard to replace. The problem was never the data. It was the format.
-      </p>
-
-      <div class="grid-auto" style="gap:3rem;">
-        <!-- Pain point 1 -->
-        <div>
-          <span style="display:block;font-family:'JetBrains Mono',monospace;font-size:0.75rem;color:rgba(56,189,248,0.45);margin-bottom:0.75rem;">01</span>
-          <p style="font-size:1rem;color:#94a8b8;line-height:1.7;">
-            You manage 5 client accounts across Instagram, Facebook, LinkedIn, and TikTok. Every month, you log into each platform, screenshot the analytics, copy the numbers into a Google Slides template you built yourself, and add some commentary. It takes 3-4 hours per client. For 5 clients, that is an entire Friday or Saturday you do not bill for.
-            <!-- PARAM: First pain point — 2-3 sentences. Should name a specific competitor or workaround the ICP currently uses and why it falls short. -->
-          </p>
-        </div>
-        <!-- Pain point 2 -->
-        <div>
-          <span style="display:block;font-family:'JetBrains Mono',monospace;font-size:0.75rem;color:rgba(56,189,248,0.45);margin-bottom:0.75rem;">02</span>
-          <p style="font-size:1rem;color:#94a8b8;line-height:1.7;">
-            Tools like Reportei and SproutSocial solve this for agencies with multiple team members and $500/mo budgets. You are a solo freelancer. You do not need a client portal, a white-label dashboard, and 40 integrations. You need a clean PDF that makes your client feel informed and keeps them renewing. That tool does not exist yet.
-            <!-- PARAM: Second pain point — the human cost or time cost of the status quo. -->
-          </p>
-        </div>
-        <!-- Pain point 3 -->
-        <div>
-          <span style="display:block;font-family:'JetBrains Mono',monospace;font-size:0.75rem;color:rgba(56,189,248,0.45);margin-bottom:0.75rem;">03</span>
-          <p style="font-size:1rem;color:#94a8b8;line-height:1.7;">
-            Your clients judge your value by what they see — and most of what they see is your monthly report. If it looks like you spent 20 minutes on it, that is what they think your work is worth. If it looks like a strategic brief from someone who runs their business like an agency, they renew. The platforms give you the data. You just spend hours formatting it.
-            <!-- PARAM: Third pain point — the irony or embarrassment of the current situation (optional but high-converting). -->
-          </p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ============================================================
-       HOW IT WORKS — 3 features / steps
-       ============================================================ -->
-  <section id="how-it-works" class="border-line" style="padding:5rem 2rem;">
-    <div style="max-width:1120px;margin:0 auto;">
-      <p style="font-size:0.72rem;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:#38bdf8;font-family:'JetBrains Mono',monospace;margin-bottom:1rem;">How it works</p>
-      <h2 style="font-size:clamp(1.5rem,3vw,2.5rem);font-weight:700;letter-spacing:-0.015em;max-width:600px;margin-bottom:4rem;color:#e8f0f8;">
-        Connect once. Send reports your clients read in 60 seconds.
-        <!-- PARAM: One sentence that sets up the 3 features below. E.g. "Your client completes the portal. You get the baseline document." -->
-      </h2>
-
-      <div class="grid-auto" style="gap:1.5rem;">
-        <!-- Feature 1 -->
-        <div class="card" style="padding:2rem;">
-          <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:1.25rem;">
-            <div class="step-icon">
-              <!-- Replace with a relevant Lucide-style SVG icon -->
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
-                <!-- DEFAULT: <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/> -->
-              </svg>
-            </div>
-            <span class="mono" style="font-size:0.7rem;text-transform:uppercase;letter-spacing:0.1em;color:#94a8b8;">Step 1</span>
-          </div>
-          <h3 style="font-size:1.05rem;font-weight:600;color:#e8f0f8;margin-bottom:0.75rem;">See the only numbers your client actually cares about</h3>
-          <p style="font-size:0.95rem;color:#94a8b8;line-height:1.65;">ReportDash connects to Instagram, Facebook, LinkedIn, and TikTok via API. You link each client's accounts once — no manual logging in, no screenshot harvesting, no copy-pasting from Business Manager.</p>
-        </div>
-        <!-- Feature 2 -->
-        <div class="card" style="padding:2rem;">
-          <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:1.25rem;">
-            <div class="step-icon">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <rect x="8" y="2" width="8" height="4" rx="1" ry="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/>
-                <!-- DEFAULT: <path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/> -->
-              </svg>
-            </div>
-            <span class="mono" style="font-size:0.7rem;text-transform:uppercase;letter-spacing:0.1em;color:#94a8b8;">Step 2</span>
-          </div>
-          <h3 style="font-size:1.05rem;font-weight:600;color:#e8f0f8;margin-bottom:0.75rem;">Send reports your clients read in 60 seconds</h3>
-          <p style="font-size:0.95rem;color:#94a8b8;line-height:1.65;">On the first of every month, ReportDash generates a branded PDF report for each client account — reach, engagement, follower growth, top posts, and a plain-English performance summary. Each report is ready before your client asks for it.</p>
-        </div>
-        <!-- Feature 3 -->
-        <div class="card" style="padding:2rem;">
-          <div style="display:flex;align-items:center;gap:0.75rem;margin-bottom:1.25rem;">
-            <div class="step-icon">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/>
-                <!-- DEFAULT: <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/> -->
-              </svg>
-            </div>
-            <span class="mono" style="font-size:0.7rem;text-transform:uppercase;letter-spacing:0.1em;color:#94a8b8;">Step 3</span>
-          </div>
-          <h3 style="font-size:1.05rem;font-weight:600;color:#e8f0f8;margin-bottom:0.75rem;">Look like a strategist, not a data exporter</h3>
-          <p style="font-size:0.95rem;color:#94a8b8;line-height:1.65;">Each report arrives with your name, your branding, and a clean layout that takes 60 seconds to read. Your client gets a deliverable that reflects professional management — and you spent zero Sunday hours building it.</p>
-        </div>
-      </div>
-
-      <!-- CRO: Emotional benefit lines -->
-      <div style="margin-top:3rem;max-width:660px;display:flex;flex-direction:column;gap:1rem;">
-        <p style="font-size:1.05rem;color:#94a8b8;line-height:1.7;margin:0;"><span style="color:#38bdf8;font-weight:600;">Stop explaining your reports every week.</span> Let the report do the talking.</p>
-        <p style="font-size:1.05rem;color:#94a8b8;line-height:1.7;margin:0;"><span style="color:#38bdf8;font-weight:600;">Make clients understand your value instantly.</span> No more 14-chart dashboards nobody opens.</p>
-      </div>
-    </div>
-  </section>
-
-  <!-- ============================================================
-       WHO IS THIS FOR — ICP section
-       ============================================================ -->
-  <section class="border-line" style="padding:5rem 2rem;">
-    <div style="max-width:1120px;margin:0 auto;">
-      <p style="font-size:0.72rem;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:#38bdf8;font-family:'JetBrains Mono',monospace;margin-bottom:1rem;">Built for</p>
-      <h2 style="font-size:clamp(1.5rem,3vw,2.5rem);font-weight:700;letter-spacing:-0.015em;max-width:600px;margin-bottom:4rem;color:#e8f0f8;">
-        Solo social media freelancers managing 3-10 client accounts
-        <!-- PARAM: Who this product is built for, specific. E.g. "Solo and 2-3 person cybersecurity consultancies serving SMB clients" -->
-      </h2>
-
-      <div class="grid-2col" style="gap:1.5rem;margin-bottom:2rem;">
-        <!-- ICP benefit card 1 -->
-        <div class="card" style="padding:2rem;">
-          <span class="mono" style="font-size:0.7rem;text-transform:uppercase;letter-spacing:0.1em;color:#94a8b8;display:block;margin-bottom:1rem;">The time problem</span>
-          <!-- PARAM: e.g. "The throughput problem" or "The time problem" -->
-          <h3 style="font-size:1.15rem;font-weight:600;color:#e8f0f8;margin-bottom:0.75rem;">Reclaim 3-4 hours per client per month.</h3>
-          <!-- PARAM: One punchy sentence of the outcome benefit. -->
-          <p style="font-size:0.95rem;color:#94a8b8;line-height:1.65;">The average solo social media freelancer spends 3-4 hours per client on manual monthly reporting. With 5 clients, that is 15-20 hours a month — the equivalent of a billing week spent on admin. ReportDash cuts that to zero.</p>
-          <!-- PARAM: 2-3 sentences expanding the benefit. Quantify if possible. -->
-        </div>
-        <!-- ICP benefit card 2 -->
-        <div class="card" style="padding:2rem;">
-          <span class="mono" style="font-size:0.7rem;text-transform:uppercase;letter-spacing:0.1em;color:#94a8b8;display:block;margin-bottom:1rem;">The positioning problem</span>
-          <h3 style="font-size:1.15rem;font-weight:600;color:#e8f0f8;margin-bottom:0.75rem;">Reports that make you look like an agency, at freelance economics.</h3>
-          <p style="font-size:0.95rem;color:#94a8b8;line-height:1.65;">Agency-grade reporting tools cost $200-500/mo and require a team to manage. ReportDash is built for a solo freelancer who wants their client-facing work to look like it came from a 5-person shop — without the 5-person budget.</p>
-        </div>
-      </div>
-
-      <!-- ICP tags — specific roles, firm sizes, tools used -->
-      <div style="display:flex;flex-wrap:wrap;gap:0.65rem;">
-        <span class="tag">Solo social media freelancers</span>
-        <span class="tag">3-10 client accounts</span>
-        <span class="tag">Instagram + LinkedIn managers</span>
-        <span class="tag">Meta Business Manager users</span>
-        <span class="tag">TikTok for Business users</span>
-        <!-- PARAM: Add/remove tags as needed. Use tool names, firm sizes, or role descriptions. -->
-      </div>
-    </div>
-  </section>
-
-  <!-- ============================================================
-       WAITLIST / CTA SECTION — email capture form
-       Primary section: this is the conversion goal
-       ============================================================ -->
-  <section id="waitlist" class="border-line" style="padding:5rem 2rem;">
-    <div style="max-width:1120px;margin:0 auto;">
-      <div class="grid-2col" style="gap:3rem 5rem;align-items:start;">
-
-        <!-- Left: copy + benefit bullets + urgency -->
-        <div>
-          <p style="font-size:0.72rem;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:#38bdf8;font-family:'JetBrains Mono',monospace;margin-bottom:1rem;">Early access · Limited founding member spots</p>
-          <h2 style="font-size:clamp(1.75rem,3.5vw,2.5rem);font-weight:700;letter-spacing:-0.02em;color:#e8f0f8;margin-bottom:1.25rem;line-height:1.2;">
-            We're onboarding 50 founding teams. Here's what you get.
-          </h2>
-          <p style="font-size:0.95rem;color:#94a8b8;line-height:1.7;max-width:440px;margin-bottom:2rem;">
-            
-            We are onboarding a small group of freelance social media managers and boutique agencies to test ReportDash before full launch.
-          
-          </p>
-
-          <!-- dir-122: "What you'll get" value prop block -->
-          <p style="font-size:0.875rem;font-weight:600;color:#e8f0f8;margin-bottom:0.75rem;">What you'll get:</p>
-          <div style="display:flex;flex-direction:column;gap:0.75rem;font-size:0.875rem;margin-bottom:1.5rem;">
-            <p style="display:flex;align-items:center;gap:0.625rem;color:rgba(232,240,248,0.75);margin:0;"><span style="width:5px;height:5px;border-radius:50%;background:#38bdf8;flex-shrink:0;"></span>One-page executive summaries per client</p>
-            <p style="display:flex;align-items:center;gap:0.625rem;color:rgba(232,240,248,0.75);margin:0;"><span style="width:5px;height:5px;border-radius:50%;background:#38bdf8;flex-shrink:0;"></span>Cross-platform insights in plain English</p>
-            <p style="display:flex;align-items:center;gap:0.625rem;color:rgba(232,240,248,0.75);margin:0;"><span style="width:5px;height:5px;border-radius:50%;background:#38bdf8;flex-shrink:0;"></span>Reports ready in one click</p>
-          </div>
-          <p style="font-size:0.8rem;color:#38bdf8;font-weight:600;">First 50 teams get lifetime founding access and direct founder onboarding.</p>
-        </div>
-
-        <!-- Right: the form -->
-        <div>
-          <!-- Success state — shown after form submission -->
-          <div id="success-message" style="display:none;padding:2.5rem 0;">
-            <div style="width:3rem;height:3rem;background:rgba(56,189,248,0.1);border-radius:0.375rem;display:flex;align-items:center;justify-content:center;margin-bottom:1.5rem;">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-            </div>
-            <h2 style="font-size:1.5rem;font-weight:700;color:#e8f0f8;margin-bottom:0.75rem;">You are on the list!</h2>
-            <p style="font-size:0.95rem;color:#94a8b8;line-height:1.65;margin:0;">We will email you when early access opens. Keep an eye on your inbox.</p>
-          </div>
-
-          <!-- Form -->
-          <form id="signup-form" onsubmit="handleSubmit(event)" style="display:flex;flex-direction:column;gap:1.25rem;">
-            <div>
-              <label style="display:block;font-size:0.875rem;font-weight:500;color:#e8f0f8;margin-bottom:0.375rem;">Work email <span style="color:#38bdf8;">*</span></label>
-              <input id="email" type="email" required placeholder="you@yourname.com" style="width:100%;height:2.75rem;padding:0 1rem;font-size:1rem;box-sizing:border-box;" />
-              <!-- PARAM you@yourname.com: e.g. "you@yourfirm.com" -->
-            </div>
-            <!-- CRO: Progressive disclosure step 2 (hidden until email submit) -->
-            <div id="form-step-2" style="display:none;flex-direction:column;gap:1.25rem;">
-            <div>
-              <label style="display:block;font-size:0.875rem;font-weight:500;color:#e8f0f8;margin-bottom:0.375rem;">First name</label>
-              <input id="first-name" type="text" placeholder="Alex" style="width:100%;height:2.75rem;padding:0 1rem;font-size:1rem;box-sizing:border-box;" />
-              <!-- PARAM Alex: e.g. "Alex" or "Your first name" -->
-            </div>
-            <div>
-              <label style="display:block;font-size:0.875rem;font-weight:500;color:#e8f0f8;margin-bottom:0.375rem;">How many client reports does your team generate monthly?</label>
-              <select id="report-volume" style="width:100%;height:2.75rem;padding:0 1rem;font-size:1rem;box-sizing:border-box;appearance:auto;">
-                <option value="" disabled selected>Select a range…</option>
-                <option value="1-5">1 to 5</option>
-                <option value="6-15">6 to 15</option>
-                <option value="16-50">16 to 50</option>
-                <option value="50+">More than 50</option>
-              </select>
-            </div>
-            <div>
-              <label style="display:block;font-size:0.875rem;font-weight:500;color:#e8f0f8;margin-bottom:0.375rem;">What tools do you currently use for reporting?</label>
-              <select id="current-tool" style="width:100%;height:2.75rem;padding:0 1rem;font-size:1rem;box-sizing:border-box;appearance:auto;">
-                <option value="" disabled selected>Select one…</option>
-                <option value="google_sheets">Google Sheets</option>
-                <option value="excel">Excel</option>
-                <option value="power_bi">Power BI</option>
-                <option value="custom">Custom dashboards</option>
-                <option value="other">Other</option>
-              </select>
-            </div>
-            
-            </div>
-            <button type="submit" id="submit-btn" class="btn-primary" style="">
-              Send Reports Clients Actually Understand
-            </button>
-            <p style="font-size:0.8rem;color:#38bdf8;font-weight:600;text-align:center;margin:0;">Once spots are filled, onboarding closes before launch.</p>
-            <p style="font-size:0.75rem;color:rgba(180,210,230,0.65);text-align:center;margin:0;">By signing up you accept our <a href="/privacy.html" style="color:#38bdf8;text-decoration:underline;">Privacy Policy</a> and analytics cookies. No spam — we will only contact you about ReportDash.</p>
-            <div style="display:flex;align-items:center;justify-content:center;gap:0.5rem;margin-top:1rem;padding:0.75rem 1rem;border:1px solid rgba(255,255,255,0.08);border-radius:0.5rem;background:rgba(255,255,255,0.03);cursor:pointer;" id="inline-booking" onclick="openCalendly(event)">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-              <span style="font-size:0.875rem;color:#38bdf8;font-weight:600;">Book a call with the founder</span>
+            <div style="display: flex; align-items: center; justify-content: center; gap: 0.5rem; margin-top: 1rem; padding: 0.75rem 1rem; border: 1px solid var(--border); border-radius: 8px; background: rgba(139,92,246,0.03); cursor: pointer;" id="inline-booking" onclick="openCalendly(event)">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+              <span style="font-size: 0.875rem; color: var(--accent); font-weight: 600;">Book a call with the founder</span>
             </div>
           </form>
         </div>
@@ -600,15 +530,15 @@
   </section>
 
   <!-- ============================================================
-       FOUNDER + INCUBATOR BADGE
+       FOUNDER BADGE
        ============================================================ -->
-  <section style="padding:2.5rem 2rem 0;">
-    <div style="max-width:1120px;margin:0 auto;text-align:center;">
-      <div style="display:inline-flex;align-items:center;gap:1rem;padding:1rem 1.5rem;border:1px solid rgba(255,255,255,0.06);border-radius:0.5rem;background:rgba(255,255,255,0.02);">
-        <img src="https://leanaistudio.com/founder.jpeg" alt="Dario Verghi" style="width:48px;height:48px;border-radius:50%;object-fit:cover;flex-shrink:0;border:1px solid rgba(56,189,248,0.2);" />
-        <div style="text-align:left;">
-          <p style="margin:0;font-size:0.875rem;color:#e8f0f8;font-weight:600;">A project by <a href="https://leanaistudio.com" target="_blank" rel="noopener" style="color:#38bdf8;text-decoration:none;">LeanAI Studio</a>, built by <a href="https://www.linkedin.com/in/verghi/" target="_blank" rel="noopener" style="color:#38bdf8;text-decoration:none;">Dario Verghi</a></p>
-          <p style="margin:0.25rem 0 0;font-size:0.8125rem;color:#94a8b8;line-height:1.5;">Building focused tools for underserved B2B niches. We ship this if 50 people sign up.</p>
+  <section style="padding: 3rem 0;">
+    <div class="container">
+      <div style="display: flex; align-items: center; gap: 1.25rem; padding: 1.5rem 1.75rem; border: 1px solid var(--border); border-radius: 16px; background: var(--surface); max-width: 600px; margin: 0 auto;">
+        <img src="https://leanaistudio.com/founder.jpeg" alt="Dario Verghi" style="width: 56px; height: 56px; border-radius: 50%; object-fit: cover; border: 2px solid rgba(139,92,246,0.3); flex-shrink: 0;" />
+        <div>
+          <p style="margin: 0; font-size: 0.95rem; font-weight: 700; color: var(--text-primary);">A project by <a href="https://leanaistudio.com" target="_blank" rel="noopener" style="color: var(--accent); text-decoration: none;">LeanAI Studio</a></p>
+          <p style="margin: 0.25rem 0 0; font-size: 0.85rem; color: var(--text-secondary); line-height: 1.5;">Built by <a href="https://www.linkedin.com/in/verghi/" target="_blank" rel="noopener" style="color: var(--accent); text-decoration: none;">Dario Verghi</a>. We ship this if 50 people sign up.</p>
         </div>
       </div>
     </div>
@@ -617,66 +547,87 @@
   <!-- ============================================================
        FOOTER
        ============================================================ -->
-  <footer class="border-line" style="padding:2.5rem 2rem;">
-    <div style="max-width:1120px;margin:0 auto;">
-      <div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-start;gap:1.25rem;margin-bottom:1.25rem;">
-        <div style="display:flex;align-items:center;gap:0.5rem;">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+  <footer style="border-top: 1px solid var(--border); padding: 2.5rem 2rem;">
+    <div class="container">
+      <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: flex-start; gap: 1.25rem; margin-bottom: 1.25rem;">
+        <div style="display: flex; align-items: center; gap: 0.5rem; font-weight: 700;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/>
           </svg>
-          <span style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:0.875rem;color:#e8f0f8;">ReportDash</span>
+          ReportDash
         </div>
-        <div style="display:flex;flex-wrap:wrap;gap:1.5rem;font-size:0.75rem;color:rgba(180,210,230,0.7);">
-          <a href="mailto:info@leanaistudio.com" style="color:inherit;text-decoration:none;" onmouseover="this.style.color='#94a8b8'" onmouseout="this.style.color='rgba(45,74,99,0.65)'">info@leanaistudio.com</a>
-          <a href="/privacy.html" style="color:inherit;text-decoration:none;" onmouseover="this.style.color='#94a8b8'" onmouseout="this.style.color='rgba(45,74,99,0.65)'">Privacy Policy</a>
-          <a href="/terms.html" style="color:inherit;text-decoration:none;" onmouseover="this.style.color='#94a8b8'" onmouseout="this.style.color='rgba(45,74,99,0.65)'">Terms of Service</a>
+        <div style="display: flex; flex-wrap: wrap; gap: 1.5rem; font-size: 0.75rem; color: rgba(180,210,230,0.7);">
+          <a href="mailto:info@leanaistudio.com" style="color: inherit; text-decoration: none;">info@leanaistudio.com</a>
+          <a href="/privacy.html" style="color: inherit; text-decoration: none;">Privacy Policy</a>
+          <a href="/terms.html" style="color: inherit; text-decoration: none;">Terms of Service</a>
         </div>
       </div>
-      <div style="border-top:1px solid #0f1f2e;padding-top:1rem;font-size:0.7rem;color:rgba(180,210,230,0.5);line-height:1.8;">
-        <p style="margin:0;">© 2026 LeanAI Studio srl — P.IVA/CF: 14561020968</p>
-        <p style="margin:0;">ReportDash is a product of LeanAI Studio srl</p>
+      <div style="border-top: 1px solid var(--border); padding-top: 1rem; font-size: 0.7rem; color: rgba(180,210,230,0.5); line-height: 1.8;">
+        <p style="margin: 0;">© 2026 LeanAI Studio srl — P.IVA/CF: 14561020968</p>
+        <p style="margin: 0;">ReportDash is a product of LeanAI Studio srl</p>
       </div>
     </div>
   </footer>
 
-  <!-- Calendly Founder Booking Widget -->
+  <!-- Calendly -->
   <link href="https://assets.calendly.com/assets/external/widget.css" rel="stylesheet">
   <script src="https://assets.calendly.com/assets/external/widget.js" type="text/javascript" async></script>
-  <style>
-    .founder-booking-badge{position:fixed;bottom:24px;right:24px;z-index:9999;display:flex;align-items:center;gap:8px;padding:12px 20px;background:#1a1a2e;color:#fff;border:1px solid rgba(255,255,255,0.15);border-radius:50px;cursor:pointer;font-family:inherit;font-size:14px;font-weight:500;box-shadow:0 4px 20px rgba(0,0,0,0.3);transition:all 0.2s ease;text-decoration:none;}
-    .founder-booking-badge:hover{transform:translateY(-2px);box-shadow:0 6px 28px rgba(0,0,0,0.4);background:#232340;color:#fff;}
-    .founder-booking-badge svg{width:18px;height:18px;flex-shrink:0;}
-  </style>
-  <a class="founder-booking-badge" id="floating-booking" href="#" onclick="openCalendly(event)">
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-    Book a Call with the Founder
-  </a>
-  <script>
-    var CALENDLY_URL='https://calendly.com/leanaistudio/30min';
-    var PRODUCT_NAME='ReportDash';
-    function openCalendly(e) {
-      e.preventDefault();
-      grantConsent();
-      if (window.Calendly) {
-        Calendly.initPopupWidget({ url: CALENDLY_URL + '?utm_source=' + encodeURIComponent(document.title.split(' ')[0]) + '&utm_medium=lp&utm_campaign=founder-call' });
-      }
-      return false;
-    }
-  </script>
 
   <!-- ============================================================
-       JAVASCRIPT — form submit handler
-       DO NOT EDIT the logic below. Only change the product-specific
-       values (secret token, product name, Plausible event name).
+       JAVASCRIPT
        ============================================================ -->
   <script>
-    // Helper: collect UTM parameters from URL
+    /* Scroll reveal (IntersectionObserver) */
+    document.addEventListener('DOMContentLoaded', function() {
+      var reveals = document.querySelectorAll('.reveal, .reveal-scale');
+      if ('IntersectionObserver' in window) {
+        var observer = new IntersectionObserver(function(entries) {
+          entries.forEach(function(entry) {
+            if (entry.isIntersecting) {
+              entry.target.classList.add('visible');
+              observer.unobserve(entry.target);
+            }
+          });
+        }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+        reveals.forEach(function(el) { observer.observe(el); });
+      } else {
+        reveals.forEach(function(el) { el.classList.add('visible'); });
+      }
+
+      /* Animated counters */
+      var counters = document.querySelectorAll('.counter');
+      var counterObserver = new IntersectionObserver(function(entries) {
+        entries.forEach(function(entry) {
+          if (entry.isIntersecting) {
+            var el = entry.target;
+            var target = parseInt(el.dataset.target);
+            var prefix = el.dataset.prefix || '';
+            var suffix = el.dataset.suffix || '';
+            var duration = 1500;
+            var start = 0;
+            var startTime = null;
+            function animate(timestamp) {
+              if (!startTime) startTime = timestamp;
+              var progress = Math.min((timestamp - startTime) / duration, 1);
+              var eased = 1 - Math.pow(1 - progress, 3);
+              var current = Math.round(start + (target - start) * eased);
+              el.textContent = prefix + current + suffix;
+              if (progress < 1) requestAnimationFrame(animate);
+            }
+            requestAnimationFrame(animate);
+            counterObserver.unobserve(el);
+          }
+        });
+      }, { threshold: 0.5 });
+      counters.forEach(function(el) { counterObserver.observe(el); });
+    });
+
+    /* Form logic */
     function getUTMParams() {
       var params = new URLSearchParams(window.location.search);
       var utm = {};
       ['utm_source','utm_medium','utm_campaign','utm_content','utm_term'].forEach(function(k) {
-        var v = params.get(k);
-        if (v) utm[k] = v;
+        var v = params.get(k); if (v) utm[k] = v;
       });
       return utm;
     }
@@ -686,14 +637,12 @@
       if (formStep === 1) {
         formStep = 2;
         document.getElementById('form-step-2').style.display = 'flex';
-        document.getElementById('submit-btn').textContent = 'Send Reports Clients Actually Understand';
       }
     }
 
     async function handleSubmit(e) {
       e.preventDefault();
       if (formStep === 1) { showStep2(); return; }
-      // Grant consent on submit — user is voluntarily engaging, enable full tracking
       grantConsent();
       var btn = document.getElementById('submit-btn');
       btn.textContent = 'Joining...';
@@ -706,7 +655,6 @@
       var currentTool = document.getElementById('current-tool').value || '';
       var payload = {
         secret: 'rd_3n6k1p9m4r7s',
-        // PARAM: Generate a random token per LP (e.g. "ak_9n4k6p2m1r8s"). Used by Sheet proxy as light auth check.
         product: 'ReportDash',
         email: email,
         first_name: firstName,
@@ -719,49 +667,30 @@
       };
       Object.assign(payload, utm);
 
-      // Slack alert via server-side proxy (SLACK_WEBHOOK_URL env var in Vercel)
-      try {
-        await fetch('/api/slack-notify', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            text: '*[ReportDash]* New waitlist signup!\n*Email:* ' + email + '\n*Name:* ' + (firstName || 'n/a') + '\n*Reports/mo:* ' + (reportVolume || 'n/a') + '\n*Current tool:* ' + (currentTool || 'n/a') + '\n*Product:* ReportDash\n*Traffic Source:* ' + (utm.utm_source || 'direct')
-          })
-        });
-      } catch(ex) {}
-
-      // Google Sheet via server-side proxy (GOOGLE_SHEET_WEBHOOK_URL env var in Vercel)
-      try {
-        await fetch('/api/sheet-notify', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload)
-        });
-      } catch(ex) {}
-
-      // Resend: contact creation + welcome email (RESEND_API_KEY env var in Vercel)
-      try {
-        await fetch('/api/resend-notify', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email: email, first_name: firstName, product: payload.product })
-        });
-      } catch(ex) {}
-
-      // Plausible custom event
-      // PARAM: 'waitlist-signup' — use 'waitlist-signup' (consistent across all LPs)
-      try { if (window.plausible) window.plausible('waitlist-signup', { props: { source: 'ReportDash', traffic_source: utm.utm_source || 'direct' } }); } catch(ex) {}
-
-      // Google Ads conversion (fires only if user accepted cookies)
-      // PARAM: 'AWAITING_SETUP' — replace with per-product conversion label from Google Ads dashboard
+      try { await fetch('/api/slack-notify', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ text: '*[ReportDash]* New waitlist signup!\n*Email:* ' + email + '\n*Name:* ' + (firstName || 'n/a') + '\n*Reports/mo:* ' + (reportVolume || 'n/a') + '\n*Current tool:* ' + (currentTool || 'n/a') + '\n*Product:* ReportDash\n*Traffic Source:* ' + (utm.utm_source || 'direct') }) }); } catch(ex) {}
+      try { await fetch('/api/sheet-notify', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) }); } catch(ex) {}
+      try { await fetch('/api/resend-notify', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: email, first_name: firstName, product: payload.product }) }); } catch(ex) {}
+      try { if (window.va) window.va('event', { name: 'waitlist-signup', data: { product: 'ReportDash', source: 'ReportDash', traffic_source: utm.utm_source || 'direct' } }); } catch(ex) {}
       try { if (typeof gtag === 'function') gtag('event', 'conversion', { send_to: 'AW-18071371531/z6DhCLq9-JccEIv-jKlD', value: 1.0, currency: 'USD' }); } catch(ex) {}
 
-      // Show success state
       document.getElementById('signup-form').style.display = 'none';
-          document.getElementById('success-message').style.display = 'block';
+      document.getElementById('success-message').style.display = 'block';
+    }
+
+    /* Calendly integration */
+    var CALENDLY_URL = 'https://calendly.com/leanaistudio/30min';
+    function openCalendly(e) {
+      e.preventDefault();
+      grantConsent();
+      try { if (typeof gtag === 'function') gtag('event', 'conversion', { send_to: 'AW-18071371531/z6DhCLq9-JccEIv-jKlD', value: 1.0, currency: 'USD' }); } catch(ex) {}
+      try { if (window.va) window.va('event', { name: 'calendly-booking', data: { product: 'reportdash' } }); } catch(ex) {}
+      try { fetch('/api/sheet-notify', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: 'calendly-booking', product: 'ReportDash', source: 'calendly', submitted_at: new Date().toISOString() }) }); } catch(ex) {}
+      if (window.Calendly) {
+        Calendly.initPopupWidget({ url: CALENDLY_URL + '?utm_source=reportdash&utm_medium=lp&utm_campaign=founder-call' });
+      }
+      return false;
     }
   </script>
-  </div>
 
 </body>
 </html>
